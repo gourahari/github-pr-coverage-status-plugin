@@ -85,8 +85,7 @@ class CustomMessage {
      * Example: Line: 92%, Branch: 76%
      */
     public String forIcon() {
-        return String.format("line: %s, branch: %s",
-                Percent.toWholeNoSignString(lineCoverage),
-                Percent.toWholeNoSignString(branchCoverage));
+        return String.format("line coverage: %s",
+                Percent.toWholeNoSignString(lineCoverage));
     }
 }
