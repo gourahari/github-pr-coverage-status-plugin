@@ -98,6 +98,7 @@ public class Configuration extends AbstractDescribableImpl<Configuration> {
         private String gitHubApiUrl;
         private String personalAccessToken;
         private String jenkinsUrl;
+        private String iconClickUrl;
         private boolean privateJenkinsPublicGitHub;
         private boolean useSonarForMasterCoverage;
         private String sonarUrl;
@@ -177,6 +178,11 @@ public class Configuration extends AbstractDescribableImpl<Configuration> {
             return jenkinsUrl;
         }
 
+        @Override
+        public String getIconClickUrl() {
+            return iconClickUrl;
+        }
+
         public String getSonarLogin() {
             return sonarLogin;
         }
@@ -192,6 +198,7 @@ public class Configuration extends AbstractDescribableImpl<Configuration> {
             yellowThreshold = NumberUtils.toInt(formData.getString("yellowThreshold"), DEFAULT_YELLOW_THRESHOLD);
             greenThreshold = NumberUtils.toInt(formData.getString("greenThreshold"), DEFAULT_GREEN_THRESHOLD);
             jenkinsUrl = StringUtils.trimToNull(formData.getString("jenkinsUrl"));
+            iconClickUrl = StringUtils.trimToNull(formData.getString("iconClickUrl"));
             privateJenkinsPublicGitHub = BooleanUtils.toBoolean(formData.getString("privateJenkinsPublicGitHub"));
             useSonarForMasterCoverage = BooleanUtils.toBoolean(formData.getString("useSonarForMasterCoverage"));
             disableSimpleCov = BooleanUtils.toBoolean(formData.getString("disableSimpleCov"));

@@ -119,10 +119,12 @@ public class CompareCoverageAction extends Recorder implements SimpleBuildStep {
         String jenkinsUrl = settingsRepository.getJenkinsUrl();
         if (jenkinsUrl == null) jenkinsUrl = Utils.getJenkinsUrlFromBuildUrl(buildUrl);
 
+        String iconClickUrl = settingsRepository.getIconClickUrl();
+        iconClickUrl = iconClickUrl != null ? Utils.resolveURL(iconClickUrl, build, listener) : buildUrl;
 
         try {
             final String comment = message.forComment(
-                    buildUrl,
+                    iconClickUrl,
                     jenkinsUrl,
                     settingsRepository.getYellowThreshold(),
                     settingsRepository.getGreenThreshold(),

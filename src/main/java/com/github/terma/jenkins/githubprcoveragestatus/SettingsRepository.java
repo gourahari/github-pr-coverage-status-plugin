@@ -8,6 +8,8 @@ interface SettingsRepository {
 
     String getJenkinsUrl();
 
+    String getIconClickUrl();
+
     int getYellowThreshold();
 
     int getGreenThreshold();
