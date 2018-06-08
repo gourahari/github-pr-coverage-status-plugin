@@ -20,6 +20,10 @@ f.section(title: descriptor.displayName) {
         f.textbox()
     }
 
+    f.entry(field: "iconClickUrl", title: _("Target URL for icon click")) {
+        f.textbox()
+    }
+
     f.entry(field: "yellowThreshold", title: _("Yellow threshold 0-100%")) {
         f.textbox()
     }

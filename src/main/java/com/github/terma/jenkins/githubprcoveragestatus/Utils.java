@@ -17,14 +17,17 @@ limitations under the License.
 */
 package com.github.terma.jenkins.githubprcoveragestatus;
 
+import java.io.IOException;
+
 import hudson.EnvVars;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
-import java.io.IOException;
-
 @SuppressWarnings("WeakerAccess")
 class Utils {
+
+    private static final String key_st = "${";
+    private static final String key_end = "}";
 
     public static final String BUILD_URL_ENV_PROPERTY = "BUILD_URL";
 
@@ -36,8 +39,22 @@ class Utils {
     }
 
     public static String getBuildUrl(Run build, TaskListener listener) throws IOException, InterruptedException {
-        final EnvVars envVars = build.getEnvironment(listener);
-        return envVars.get(BUILD_URL_ENV_PROPERTY);
+        return getBuildUrl(build, listener, BUILD_URL_ENV_PROPERTY);
     }
 
+    public static String getBuildUrl(Run build, TaskListener listener, String key) throws IOException, InterruptedException {
+        final EnvVars envVars = build.getEnvironment(listener);
+        return String.valueOf(envVars.get(key));
+    }
+
+    public static String resolveURL(String url, Run build, TaskListener listener) throws IOException, InterruptedException {
+        int startIndex = -1;
+        int endIndex = 0;
+        while (-1 != (startIndex = url.indexOf(key_st, endIndex))) {
+            endIndex = url.indexOf(key_end, startIndex);
+            String key = url.substring(startIndex + key_st.length(), endIndex);
+            url = url.replace(key_st + key + key_end, getBuildUrl(build, listener, key));
+        }
+        return url;
+    }
 }

@@ -55,6 +55,14 @@ public class ServiceRegistry {
         return coverageRepository != null ? coverageRepository : new GetCoverageCallable(disableSimpleCov);
     }
 
+    public static CoverageRepository getLineCoverageRepository() {
+        return new CustomCoverageCallable(new CoberturaLineCoverageParser());
+    }
+
+    public static CoverageRepository getBranchCoverageRepository() {
+        return new CustomCoverageCallable(new CoberturaBranchCoverageParser());
+    }
+
     public static void setCoverageRepository(CoverageRepository coverageRepository) {
         ServiceRegistry.coverageRepository = coverageRepository;
     }

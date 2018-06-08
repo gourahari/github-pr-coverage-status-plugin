@@ -57,8 +57,6 @@ public class CompareCoverageAction extends Recorder implements SimpleBuildStep {
     public static final String BUILD_LOG_PREFIX = "[GitHub PR Status] ";
 
     private static final long serialVersionUID = 1L;
-    private String sonarLogin;
-    private String sonarPassword;
     private Map<String, String> scmVars;
 
     @DataBoundConstructor
@@ -67,12 +65,10 @@ public class CompareCoverageAction extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter
     public void setSonarLogin(String sonarLogin) {
-        this.sonarLogin = sonarLogin;
     }
 
     @DataBoundSetter
     public void setSonarPassword(String sonarPassword) {
-        this.sonarPassword = sonarPassword;
     }
 
     // TODO why is this needed for no public field ‘scmVars’ (or getter method) found in class ....
@@ -105,17 +101,17 @@ public class CompareCoverageAction extends Recorder implements SimpleBuildStep {
         final int prId = PrIdAndUrlUtils.getPrId(scmVars, build, listener);
         final String gitUrl = PrIdAndUrlUtils.getGitUrl(scmVars, build, listener);
 
-        buildLog.println(BUILD_LOG_PREFIX + "getting master coverage...");
-        MasterCoverageRepository masterCoverageRepository = ServiceRegistry.getMasterCoverageRepository(buildLog, sonarLogin, sonarPassword);
         final GHRepository gitHubRepository = ServiceRegistry.getPullRequestRepository().getGitHubRepository(gitUrl);
-        final float masterCoverage = masterCoverageRepository.get(gitUrl);
-        buildLog.println(BUILD_LOG_PREFIX + "master coverage: " + masterCoverage);
 
-        buildLog.println(BUILD_LOG_PREFIX + "collecting coverage...");
-        final float coverage = ServiceRegistry.getCoverageRepository(settingsRepository.isDisableSimpleCov()).get(workspace);
-        buildLog.println(BUILD_LOG_PREFIX + "build coverage: " + coverage);
+        buildLog.println(BUILD_LOG_PREFIX + "collecting line coverage...");
+        final float lineCoverage = ServiceRegistry.getLineCoverageRepository().get(workspace);
+        buildLog.println(BUILD_LOG_PREFIX + "line coverage: " + lineCoverage);
 
-        final Message message = new Message(coverage, masterCoverage);
+        buildLog.println(BUILD_LOG_PREFIX + "collecting branch coverage...");
+        final float branchCoverage = ServiceRegistry.getBranchCoverageRepository().get(workspace);
+        buildLog.println(BUILD_LOG_PREFIX + "line branch coverage: " + branchCoverage);
+
+        final CustomMessage message = new CustomMessage(lineCoverage, branchCoverage);
         buildLog.println(BUILD_LOG_PREFIX + message.forConsole());
 
         final String buildUrl = Utils.getBuildUrl(build, listener);
@@ -123,10 +119,12 @@ public class CompareCoverageAction extends Recorder implements SimpleBuildStep {
         String jenkinsUrl = settingsRepository.getJenkinsUrl();
         if (jenkinsUrl == null) jenkinsUrl = Utils.getJenkinsUrlFromBuildUrl(buildUrl);
 
+        String iconClickUrl = settingsRepository.getIconClickUrl();
+        iconClickUrl = iconClickUrl != null ? Utils.resolveURL(iconClickUrl, build, listener) : buildUrl;
 
         try {
             final String comment = message.forComment(
-                    buildUrl,
+                    iconClickUrl,
                     jenkinsUrl,
                     settingsRepository.getYellowThreshold(),
                     settingsRepository.getGreenThreshold(),
