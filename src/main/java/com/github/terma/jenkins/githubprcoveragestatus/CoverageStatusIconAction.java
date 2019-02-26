@@ -37,8 +37,13 @@ public class CoverageStatusIconAction implements UnprotectedRootAction {
      */
     @SuppressWarnings("unused")
     public void doIndex(StaplerRequest request, StaplerResponse response) throws IOException {
-        final float lineCoverage = Float.parseFloat(request.getParameter("lineCoverage"));
-        final float branchCoverage = Float.parseFloat(request.getParameter("branchCoverage"));
+        float lineCoverage = 0f;
+        float branchCoverage = 0f;
+        try {
+            lineCoverage = Float.parseFloat(request.getParameter("lineCoverage"));
+            branchCoverage = Float.parseFloat(request.getParameter("branchCoverage"));
+        } catch (NumberFormatException e) {
+        }
 
         response.setContentType("image/svg+xml");
 

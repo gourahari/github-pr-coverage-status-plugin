@@ -57,6 +57,7 @@ final class CustomCoverageCallable extends MasterToSlaveFileCallable<Float> impl
     @Override
     public Float invoke(final File ws, final VirtualChannel channel) throws IOException {
         final List<Float> cov = new ArrayList<Float>();
+        cov.addAll(getFloats(ws, "**/Cobertura.xml", parser));
         cov.addAll(getFloats(ws, "**/cobertura.xml", parser));
         cov.addAll(getFloats(ws, "**/cobertura-coverage.xml", parser));
 
